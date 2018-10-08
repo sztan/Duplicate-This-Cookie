@@ -17,6 +17,80 @@ function deleteAll(cookieList, searchUrl) {
     }
 }
 
+function duplicateCookie() {
+
+    var bkg = chrome.extension.getBackgroundPage();
+
+    // set urls here
+    var myProdURL = "https://www.myProdUrl.whatever.com";
+    var myDevURL = "https://www.myDevUrl.anything.dev";
+    var domMatches = myDevURL.match(/(www)(.*)|(https?:\/\/www)(.*)|(https?:\/\/)(.*)|(.*)/);
+    bkg.console.log(domMatches);
+    var domain;
+
+    var BreakException = {};
+
+    // getting domain
+    try {
+        var i = 0;
+        domMatches.forEach(function(el) {
+            bkg.console.log("i: ", i, "el: ",el);
+            if (i > 0 && (i % 2) === 0 && el !== undefined) {
+                domain = el;
+                throw BreakException;
+            }
+            i++;
+        });
+    } catch (e) {
+        if (e !== BreakException) throw e;
+    }
+
+    // let's duplicate cookies :
+    try {
+        var myCookie = chrome.cookies.get({
+            'url': myProdURL,
+            'name': 'cookieName1'
+        }, function(cookie){
+            try {
+                setIt = chrome.cookies.set({
+                    'url' : myDevURL,
+                    'name' : 'cookieName1',
+                    'domain' : domain,
+                    'value' : cookie.value
+                }, function(setIt) {return setIt});
+            } catch(err) {
+                bkg.console.log(err.message);
+            }
+        });
+    } catch (err) {
+        bkg.console.log(err.message);
+    }
+
+    // one more :
+
+    try {
+        var myCookie = chrome.cookies.get({
+            'url': myProdURL,
+            'name': 'cookieName2'
+        }, function(cookie){
+            try {
+                setIt = chrome.cookies.set({
+                    'url' : myDevURL,
+                    'name' : 'cookieName2',
+                    'domain' : domain,
+                    'value' : cookie.value
+                }, function(setIt) {return setIt});
+            } catch(err) {
+                bkg.console.log(err.message);
+            }
+        });
+    } catch (err) {
+        bkg.console.log(err.message);
+    }
+
+    // ... etc
+}
+
 function deleteCookie(url, name, store, callback) {
     chrome.cookies.remove({
         'url': url,

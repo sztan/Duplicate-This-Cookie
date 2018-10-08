@@ -397,6 +397,16 @@ function setEvents() {
         startAlertDialog(_getMessage("Alert_deleteAll"), okFunction);
     });
 
+    $("#duplicateButton").unbind().click(function () {
+
+        if (cookieList.length === 0)
+            return false;
+
+        duplicateCookie();
+        doSearch();
+
+    });
+
     if (preferences.showCommandsLabels) {
         $(".commands-row", ".commands-table").addClass("commands-row-texy");
     }

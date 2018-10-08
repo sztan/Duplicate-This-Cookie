@@ -143,6 +143,9 @@
     "editThis_Options": {
         "message": "Options"
     },
+    "editThis_Duplicate": {
+        "message": "Duplicate"
+    },
     "editThis_Donate": {
         "message": "Contribute"
     },
